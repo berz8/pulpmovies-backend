@@ -4,8 +4,11 @@ import (
 	"log"
 	"os"
 
+	"github.com/berz8/pulpmovies-backend/database"
+	"github.com/berz8/pulpmovies-backend/database/migrations"
 	"github.com/berz8/pulpmovies-backend/handlers"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
@@ -32,6 +35,19 @@ func main() {
 
   app.Use(logger.New())
   app.Use(recover.New())
+  app.Use(compress.New())
+
+
+  // DB Connection
+  database.Connect()
+  defer database.DB.Close()
+
+  // Running DB Migrations
+  err = migrations.RunMigrations(database.DB)
+  if err != nil {
+    log.Fatal("error running migrations", err)
+  }
+  
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Pulpmovies - Backend API Service")
