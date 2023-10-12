@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 func main() {
-	fmt.Println("Pulpmovies")
+	app := fiber.New()
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Pulpmovies - Backend API Service")
+	})
+
+	app.Listen(":3001")
+
 }
