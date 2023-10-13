@@ -3,7 +3,7 @@ package migrations
 import "database/sql"
 
 func CreateUserTable(db *sql.DB) error {
-  _, err := db.Exec(`
+	_, err := db.Exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER,
       username TEXT,
@@ -20,8 +20,8 @@ func CreateUserTable(db *sql.DB) error {
       PRIMARY KEY (id) ON CONFLICT FAIL
     )
   `)
-  if err != nil {
-    return err
-  }
-  return nil
+	if err != nil {
+		return err
+	}
+	return nil
 }

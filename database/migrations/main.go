@@ -5,10 +5,10 @@ import (
 )
 
 func RunMigrations(db *sql.DB) error {
-  err := CreateUserTable(db)
+	err := CreateUserTable(db)
 
-  if err != nil {
-    return err
-  }
-  return nil
+	if err != nil {
+		return err
+	}
+	return nil
 }

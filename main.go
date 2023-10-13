@@ -33,27 +33,25 @@ func main() {
 		Prefork: isProd,
 	})
 
-  app.Use(logger.New())
-  app.Use(recover.New())
-  app.Use(compress.New())
+	app.Use(logger.New())
+	app.Use(recover.New())
+	app.Use(compress.New())
 
+	// DB Connection
+	database.Connect()
+	defer database.DB.Close()
 
-  // DB Connection
-  database.Connect()
-  defer database.DB.Close()
-
-  // Running DB Migrations
-  err = migrations.RunMigrations(database.DB)
-  if err != nil {
-    log.Fatal("error running migrations", err)
-  }
-  
+	// Running DB Migrations
+	err = migrations.RunMigrations(database.DB)
+	if err != nil {
+		log.Fatal("error running migrations", err)
+	}
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Pulpmovies - Backend API Service")
 	})
 
-  app.Use(handlers.NotFound)
+	app.Use(handlers.NotFound)
 
 	log.Fatal(app.Listen(":" + port))
 }

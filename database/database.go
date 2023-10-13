@@ -10,11 +10,11 @@ import (
 
 var DB *sql.DB
 
-func Connect () {
-  dbUrl := os.Getenv("DB")
-  db, err := sql.Open("libsql", dbUrl)
-  if err != nil {
-    log.Fatal("failed to connect to db", err)
-  }
-  DB = db
+func Connect() {
+	dbUrl := os.Getenv("DB")
+	db, err := sql.Open("libsql", dbUrl)
+	if err != nil {
+		log.Fatal("failed to connect to db", err)
+	}
+	DB = db
 }
