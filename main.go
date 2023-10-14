@@ -7,6 +7,7 @@ import (
 	"github.com/berz8/pulpmovies-backend/database"
 	"github.com/berz8/pulpmovies-backend/database/migrations"
 	"github.com/berz8/pulpmovies-backend/handlers"
+	"github.com/berz8/pulpmovies-backend/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -50,6 +51,8 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Pulpmovies - Backend API Service")
 	})
+
+  routes.UserRoutes(app)
 
 	app.Use(handlers.NotFound)
 

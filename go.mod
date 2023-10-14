@@ -23,5 +23,6 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
 	golang.org/x/sys v0.12.0 // indirect
+	gopkg.in/guregu/null.v4 v4.0.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )

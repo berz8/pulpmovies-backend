@@ -6,8 +6,8 @@ func CreateUserTable(db *sql.DB) error {
 	_, err := db.Exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER NOT NULL UNIQUE,
-      username TEXT UNIQUE,
-      email TEXT UNIQUE,
+      username TEXT NOT NULL UNIQUE,
+      email TEXT NOT NULL UNIQUE,
       full_name TEXT,
       birthday TEXT,
       biography TEXT,
