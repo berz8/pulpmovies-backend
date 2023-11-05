@@ -10,22 +10,7 @@ func GetUserByID(c *fiber.Ctx) error {
   db := database.DB
   userID := c.Params("id")
   user := models.User{}
-  err := db.QueryRow(`
-    SELECT * from users WHERE users.id = ?
-  `, userID).Scan(
-    &user.ID,
-    &user.Username,
-    &user.Email,
-    &user.FullName,
-    &user.Birthday,
-    &user.Biography,
-    &user.ProfilePath,
-    &user.AccountStatus,
-    &user.Onboarding,
-    &user.CreatedAt,
-    &user.UpdatedAt,
-    &user.DeletedAt,
-  )
+  err := models.GetUserByID(&user, db, userID)
   if err != nil {
     return fiber.NewError(
       fiber.StatusNotFound,

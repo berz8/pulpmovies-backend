@@ -15,6 +15,13 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type (
+    GlobalErrorHandlerResp struct {
+        Success bool   `json:"success"`
+        Message string `json:"message"`
+    }
+)
+
 func main() {
 	// Reading env vars
 	err := godotenv.Load()
@@ -32,6 +39,12 @@ func main() {
 
 	app := fiber.New(fiber.Config{
 		Prefork: isProd,
+    ErrorHandler: func(c *fiber.Ctx, err error) error {
+            return c.Status(fiber.StatusBadRequest).JSON(GlobalErrorHandlerResp{
+                Success: false,
+                Message: err.Error(),
+            })
+    },
 	})
 
 	app.Use(logger.New())
@@ -52,6 +65,7 @@ func main() {
 		return c.SendString("Pulpmovies - Backend API Service")
 	})
 
+  routes.AuthRoutes(app)
   routes.UserRoutes(app)
 
 	app.Use(handlers.NotFound)
