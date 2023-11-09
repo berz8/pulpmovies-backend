@@ -24,17 +24,18 @@ type (
 
 func main() {
 	// Reading env vars
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+  isProd := false
+  if os.Getenv("ENVIRONMENT") == "PRODUCTION" {
+    isProd = true
+  } else {
+    err := godotenv.Load()
+    if err != nil {
+      log.Fatal("Error loading .env file")
+    }
+  }
 	port := "3000"
 	if os.Getenv("PORT") != "" {
 		port = os.Getenv("PORT")
-	}
-	isProd := false
-	if os.Getenv("ENVIRONMENT") == "PRODUCTION" {
-		isProd = true
 	}
 
 	app := fiber.New(fiber.Config{
@@ -56,7 +57,7 @@ func main() {
 	defer database.DB.Close()
 
 	// Running DB Migrations
-	err = migrations.RunMigrations(database.DB)
+  err := migrations.RunMigrations(database.DB)
 	if err != nil {
 		log.Fatal("error running migrations", err)
 	}
