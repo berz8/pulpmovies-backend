@@ -68,6 +68,7 @@ func main() {
 
   routes.AuthRoutes(app)
   routes.UserRoutes(app)
+  routes.WatclistRoutes(app)
 
 	app.Use(handlers.NotFound)
 

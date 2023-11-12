@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"context"
+	"database/sql"
+	"log"
 	"strings"
 
 	"github.com/berz8/pulpmovies-backend/database"
@@ -33,7 +35,7 @@ func GetUserByUsername(c *fiber.Ctx) error {
   if err != nil {
     return fiber.NewError(
       fiber.StatusNotFound,
-      "User not found",
+      "User not found" + err.Error(),
     )
   }
 
@@ -68,22 +70,31 @@ func OnBoarding(c *fiber.Ctx) error {
   err, errMsgs := validators.Valid.Validate(onBoardingBody)
   if err != nil {
     return &fiber.Error{
-      Code:    fiber.ErrBadRequest.Code,
+      Code:    fiber.StatusBadRequest,
       Message: strings.Join(errMsgs, " and "),
     }
   }
   db := database.DB
   user := models.User{}
   err = models.GetUserByUsername(&user, db, onBoardingBody.Username,)
-  if err != nil || user.Username != onBoardingBody.Username {
+  if err != nil {
+    if err != sql.ErrNoRows {
+      return &fiber.Error{
+        Code:    fiber.StatusBadRequest,
+        Message: "Something went wrong " + err.Error(),
+      }
+    }
+  } else if user.Username == onBoardingBody.Username {
     return &fiber.Error{
-      Code:    fiber.ErrBadRequest.Code,
+      Code:    fiber.StatusBadRequest,
       Message: "Username already in use",
     }
   }
 
+
   userID, _ := models.GetUserIDFromToken(c)
 
+  log.Println(onBoardingBody.Username)
   _, err = db.ExecContext(
     context.Background(),
     `UPDATE users SET username = ?, onboarding = 1 WHERE id = ?`,

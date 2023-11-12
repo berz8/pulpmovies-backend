@@ -9,17 +9,15 @@ import (
 )
 
 
-func UserRoutes(app *fiber.App) {
+func WatclistRoutes(app *fiber.App) {
   accessSecret := os.Getenv("ACCESS_SECRET")
-  user := app.Group("/user")
+  user := app.Group("/watchlist")
 
-  user.Get("/id/:id", handlers.GetUserByID)
-  user.Get("/username/:username", handlers.GetUserByUsername)
-  user.Get("/username/:username/check", handlers.CheckUsername)
+  user.Get("/id/:id", handlers.GetWatchlistByID)
+  user.Get("/user/:id", handlers.GetWatchlistByUserID)
   user.Use(jwtware.New(jwtware.Config{
         SigningKey: jwtware.SigningKey{Key: []byte(accessSecret)},
   }))
-  user.Post("/onboarding", handlers.OnBoarding)
 
 
 }
