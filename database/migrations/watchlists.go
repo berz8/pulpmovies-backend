@@ -10,6 +10,7 @@ func CreateWatchlistsTable(db *sql.DB) error {
       description TEXT,
       user_id INTEGER NOT NULL,     
       public INTEGER NOT NULL,     
+      is_default INTEGER NOT NULL,     
       PRIMARY KEY (id) ON CONFLICT FAIL
       FOREIGN KEY (user_id) REFERENCES users(id)
     )

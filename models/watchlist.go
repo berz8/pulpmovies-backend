@@ -12,6 +12,7 @@ type Watchlist struct {
   Name string `json:"name"`
   Description null.String `json:"description"`
   Public int8 `json:"public"`
+  IsDefault int8 `json:"isDefault"`
   UserID int32 `json:"userId"`
 }
 
@@ -33,6 +34,7 @@ func GetWatchlistByID(watchlist *Watchlist, db *sql.DB, id string) error {
     &watchlist.Name,
     &watchlist.Description,
     &watchlist.Public,
+    &watchlist.IsDefault,
     &watchlist.UserID,
   )
   return err

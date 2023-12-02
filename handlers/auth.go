@@ -57,6 +57,18 @@ func AuthGoogle(c *fiber.Ctx) error {
         )
       }
       err = models.GetUserByEmail(&user, db, tokenInfo.Email)
+      // Create default Watchlsit for the new user
+      _, err = db.ExecContext(
+        context.Background(),
+        `INSERT INTO watchlists (name, user_id, public, is_default) VALUES ('watchlist', ?, 1, 1)`,
+        user.ID,
+      )
+      if err != nil {
+        return fiber.NewError(
+          fiber.StatusBadRequest,
+          "Something went wrong while creating user's watchlist " + err.Error(),
+        )
+      }
     } else {
       return fiber.NewError(
         fiber.StatusNotFound,

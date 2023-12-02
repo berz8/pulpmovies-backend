@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"database/sql"
-	"log"
 	"strings"
 
 	"github.com/berz8/pulpmovies-backend/database"
@@ -94,7 +93,6 @@ func OnBoarding(c *fiber.Ctx) error {
 
   userID, _ := models.GetUserIDFromToken(c)
 
-  log.Println(onBoardingBody.Username)
   _, err = db.ExecContext(
     context.Background(),
     `UPDATE users SET username = ?, onboarding = 1 WHERE id = ?`,
