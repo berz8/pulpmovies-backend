@@ -164,3 +164,11 @@ func UserWatchlistsHaveMovie(db *sql.DB, userID int32, movieID string, watchlist
 }
 
 
+func RemoveMovieFromWatchlist(db *sql.DB, watchlistID int32, movieID string) error {
+  _, err := db.Exec(`
+    DELETE FROM watchlist_movies WHERE watchlist_id = ? AND movie_id = ?
+  `, watchlistID, movieID)
+  return err
+}
+
+

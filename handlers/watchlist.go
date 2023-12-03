@@ -129,6 +129,50 @@ func AddMovieToWatchlist(c *fiber.Ctx) error {
   return c.SendStatus(fiber.StatusCreated)
 }
 
+func RemoveMovieFromWatchlist(c *fiber.Ctx) error {
+  db := database.DB
+  watchlistID := c.Params("id")
+  movieID := c.Params("movieId")
+
+  userID, err := models.GetUserIDFromToken(c)
+  if err != nil {
+    return fiber.NewError(
+      fiber.StatusBadRequest,
+      "Something went wrong while getting user id" + err.Error(),
+    )
+  }
+
+  watchlist := models.Watchlist{}
+  if watchlistID == "default" {
+    err = models.GetDefaultWatchlistByUserID(&watchlist, db, int32(userID))
+  } else {
+    err = models.GetWatchlistByID(&watchlist, db, watchlistID)
+  }
+  if err != nil {
+    return fiber.NewError(
+      fiber.StatusNotFound,
+      "Watchlist not found",
+    )
+  }
+
+  if watchlist.UserID != int32(userID) {
+    return fiber.NewError(
+      fiber.StatusBadRequest,
+      "Watchlist does not belong to user",
+    )
+  }
+
+  err = models.RemoveMovieFromWatchlist(db, watchlist.ID, movieID)
+  if err != nil {
+    return fiber.NewError(
+      fiber.StatusBadRequest,
+      "Something went wrong while removing movie from watchlist" + err.Error(),
+    )
+  }
+
+  return c.SendStatus(fiber.StatusOK)
+}
+
 func GetIsMovieInUserWatchlists(c *fiber.Ctx) error {
   db := database.DB
   movieID := c.Params("movieId")
