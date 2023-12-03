@@ -18,6 +18,8 @@ func WatclistRoutes(app *fiber.App) {
   user.Use(jwtware.New(jwtware.Config{
         SigningKey: jwtware.SigningKey{Key: []byte(accessSecret)},
   }))
+  user.Post("/id/:id/add", handlers.AddMovieToWatchlist)
+  user.Get("/user/movie/:movieId", handlers.GetIsMovieInUserWatchlists)
 
 
 }

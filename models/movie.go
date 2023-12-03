@@ -36,3 +36,10 @@ func GetMovieByID(movie *Movie, db *sql.DB, id string) error {
   )
   return err
 }
+
+func CreateMovie(movie *Movie, db *sql.DB) error {
+  _, err := db.Exec(`
+    INSERT OR REPLACE INTO movies (id, imdb_id, original_title, title, original_language, overview, poster_path, release_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `, movie.ID, movie.ImdbID, movie.OriginalTitle, movie.Title, movie.OriginalLanguage, movie.Overview, movie.PosterPath, movie.ReleaseDate)
+  return err
+}

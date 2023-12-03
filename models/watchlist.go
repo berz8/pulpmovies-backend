@@ -72,6 +72,20 @@ func GetWatchlistByUserID(watchlists *[]Watchlist, db *sql.DB, id string) error 
   return err
 }
 
+func GetDefaultWatchlistByUserID(watchlist *Watchlist, db *sql.DB, userID int32) error {
+  err := db.QueryRow(`
+  SELECT * from watchlists WHERE watchlists.user_id = ? AND watchlists.is_default = 1
+  `, userID).Scan(
+    &watchlist.ID,
+    &watchlist.Name,
+    &watchlist.Description,
+    &watchlist.Public,
+    &watchlist.IsDefault,
+    &watchlist.UserID,
+  )
+  return err
+}
+
 func GetWatchlistMovies(movies *[]WatchlistMovie, db *sql.DB, id string) error {
   rows, err := db.Query(`
     SELECT 
@@ -111,3 +125,42 @@ func GetWatchlistMovies(movies *[]WatchlistMovie, db *sql.DB, id string) error {
 
   return err
 }
+
+func AddMovieToWatchlist(db *sql.DB, watchlistID int32, movieID int32) error {
+  _, err := db.Exec(`
+    INSERT INTO watchlist_movies (watchlist_id, movie_id) VALUES (?, ?)
+  `, watchlistID, movieID)
+  return err
+}
+
+func UserWatchlistsHaveMovie(db *sql.DB, userID int32, movieID string, watchlists *[]Watchlist) error {
+  rows, err := db.Query(`
+    SELECT w.id as id, w.name as name, w.description as description, w.public as public, w.is_default as is_default, w.user_id as user_id
+    FROM watchlist_movies wm 
+    LEFT JOIN watchlists w ON wm.watchlist_id = w.id
+    WHERE wm.movie_id = ? AND w.user_id = ?
+  `, movieID, userID)
+  if err != nil {
+    return err
+  }
+
+  for rows.Next() {
+    watchlist := Watchlist{}
+    err = rows.Scan(
+      &watchlist.ID,
+      &watchlist.Name,
+      &watchlist.Description,
+      &watchlist.Public,
+      &watchlist.IsDefault,
+      &watchlist.UserID,
+    )
+    if err != nil {
+      return err
+    }
+    *watchlists = append(*watchlists, watchlist)
+  }
+
+  return err
+}
+
+

@@ -24,8 +24,8 @@ func CreateWatchlistsTable(db *sql.DB) error {
 func CreateWatchlistMoviesTable(db *sql.DB) error {
 	_, err := db.Exec(`
     CREATE TABLE IF NOT EXISTS watchlist_movies (
-      watchlist_id INTEGER NOT NULL UNIQUE,
-      movie_id INTEGER NOT NULL UNIQUE,
+      watchlist_id INTEGER NOT NULL,
+      movie_id INTEGER NOT NULL,
       PRIMARY KEY (watchlist_id, movie_id) ON CONFLICT FAIL
       FOREIGN KEY (watchlist_id) REFERENCES watchlists(id)
       FOREIGN KEY (movie_id) REFERENCES movies(id)
@@ -36,3 +36,4 @@ func CreateWatchlistMoviesTable(db *sql.DB) error {
 	}
 	return nil
 }
+
